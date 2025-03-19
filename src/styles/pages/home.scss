@@ -21,7 +21,7 @@
 
 .content {
   position: relative;
-  color: #226F54;
+  color: #226f54;
   padding: 150px 50px;
   border-radius: 30px;
   margin-bottom: 50px;
@@ -33,22 +33,4 @@
 
 .home-article {
   font-size: 2rem;
-}
-
-.primary-button {
-  padding: 10px 20px;
-  background-color: #226F54;
-  color: #F9EBE0;
-  border: none;
-  cursor: pointer;
-  margin-top: 20px;
-  border-radius: 20px;
-  margin-top: 120px;
-  margin-left: 30px;
-  font-size: 22px;
-  transition: background-color 0.3s ease;
-
-  &:hover{
-    background-color: #1b5943;
-  }
 }

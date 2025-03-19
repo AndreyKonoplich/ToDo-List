@@ -1,27 +1,31 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
+import SignupForm from '@/components/signupForm/SignupForm';
 
-import '@/styles/components/loginForm.scss';
+import '@/components/loginForm/sass/loginForm.scss';
 
 const LoginForm = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const openLoginModal = () => setIsLoginModalOpen(true);
+  const closeLoginModal = () => setIsLoginModalOpen(false);
+
+  const openSignupModal = () => setIsSignupModalOpen(true);
+  const closeSignupModal = () => setIsSignupModalOpen(false);
 
   return (
     <>
-      <button className="primary-button" onClick={openModal}>
+      <button className="primary-button" onClick={openLoginModal}>
         Приступить
       </button>
 
-      {isModalOpen && (
+      {isLoginModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <button className="close-button" onClick={closeModal}>
-              X
+            <button className="close-button" onClick={closeLoginModal}>
+              <img src="/assets/icons/cross.svg" alt="Закрыть" />
             </button>
             <h2>Вход</h2>
             <form>
@@ -50,12 +54,16 @@ const LoginForm = () => {
               </button>
             </form>
             <p className="signup-link">
-              Нет аккаунта?
-              <Link href="/signup"> Зарегистрируйтесь</Link>
+              Нет аккаунта?{' '}
+              <button onClick={openSignupModal} className="signup-button">
+                Зарегистрируйтесь
+              </button>
             </p>
           </div>
         </div>
       )}
+
+      {isSignupModalOpen && <SignupForm onClose={closeSignupModal} />}
     </>
   );
 };

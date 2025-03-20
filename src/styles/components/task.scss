@@ -5,6 +5,9 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: 0.3s ease;
+  animation:
+    fadeIn 0.3s ease-in-out,
+    fadeInScale 0.3s ease-in-out;
 
   &:hover {
     background-color: #e6e6e6;
@@ -20,6 +23,8 @@
 
   h4 {
     margin: 0 0 8px;
+    word-wrap: break-word; // Перенос текста на новую строку
+    overflow-wrap: break-word; // Альтернативное свойство для переноса
   }
 
   p {
@@ -62,6 +67,14 @@
 
     &:hover {
       background-color: #e53935;
+    }
+  }
+
+  .task-content {
+    h4,
+    p {
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
   }
 }

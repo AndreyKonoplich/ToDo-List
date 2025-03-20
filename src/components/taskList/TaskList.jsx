@@ -5,11 +5,12 @@ import Task from '@/components/task/Task';
 
 import '@/styles/components/taskList.scss';
 
-const TaskList = ({ title, onDelete, onEdit }) => {
+const TaskList = ({ id }) => {
   const [tasks, setTasks] = useState([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [isEditing, setIsEditing] = useState(false);
-  const [editedTitle, setEditedTitle] = useState(title);
+  const [title, setTitle] = useState(`Список ${id}`);
+  const [isDeleted, setIsDeleted] = useState(false);
   const editInputRef = useRef(null);
 
   useEffect(() => {
@@ -20,38 +21,46 @@ const TaskList = ({ title, onDelete, onEdit }) => {
 
   const handleAddTask = () => {
     if (newTaskTitle.trim()) {
-      const newTask = {
-        id: Date.now(),
-        title: newTaskTitle,
-        description: '',
-        status: 'В процессе',
-        timeLeft: '2 часа',
-      };
-      setTasks([...tasks, newTask]);
+      setTasks([...tasks, { id: Date.now(), title: newTaskTitle }]);
       setNewTaskTitle('');
     }
   };
 
   const handleEditTitle = () => {
-    if (isEditing) {
-      onEdit(editedTitle);
-    }
-    setIsEditing(!isEditing);
+    setIsEditing(true); // Открываем инпут для редактирования
   };
 
-  const handleSaveOnBlur = () => {
-    if (isEditing) {
-      onEdit(editedTitle);
-      setIsEditing(false);
+  const handleSaveTitle = () => {
+    setIsEditing(false); // Сохраняем и закрываем инпут
+  };
+
+  const handleSaveOnBlur = (e) => {
+    // Проверяем, связан ли blur с кликом на кнопку "Сохранить"
+    if (
+      !e.relatedTarget ||
+      !e.relatedTarget.classList.contains('save-button')
+    ) {
+      setIsEditing(false); // Закрываем инпут только если blur не вызван кнопкой "Сохранить"
     }
   };
 
   const handleSaveOnEnter = (e) => {
     if (e.key === 'Enter') {
-      onEdit(editedTitle);
-      setIsEditing(false);
+      setIsEditing(false); // Закрываем инпут при нажатии Enter
     }
   };
+
+  const handleDeleteList = () => {
+    setIsDeleted(true);
+  };
+
+  const handleInputKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleAddTask(); // Добавляем задачу при нажатии Enter
+    }
+  };
+
+  if (isDeleted) return null;
 
   return (
     <div className="task-list">
@@ -59,21 +68,27 @@ const TaskList = ({ title, onDelete, onEdit }) => {
         {isEditing ? (
           <input
             type="text"
-            value={editedTitle}
-            onChange={(e) => setEditedTitle(e.target.value)}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             onBlur={handleSaveOnBlur}
             onKeyDown={handleSaveOnEnter}
             ref={editInputRef}
             className="edit-input"
           />
         ) : (
-          <h3>{editedTitle}</h3>
+          <h3>{title}</h3>
         )}
         <div className="list-actions">
-          <button onClick={handleEditTitle} className="edit-button">
-            <img src="/assets/icons/edit.svg" alt="Редактировать" />
-          </button>
-          <button onClick={onDelete} className="delete-button">
+          {isEditing ? (
+            <button onClick={handleSaveTitle} className="save-button">
+              <img src="/assets/icons/accept.svg" alt="Сохранить" />
+            </button>
+          ) : (
+            <button onClick={handleEditTitle} className="edit-button">
+              <img src="/assets/icons/edit.svg" alt="Редактировать" />
+            </button>
+          )}
+          <button onClick={handleDeleteList} className="delete-button">
             <img src="/assets/icons/cross.svg" alt="Удалить" />
           </button>
         </div>
@@ -84,14 +99,12 @@ const TaskList = ({ title, onDelete, onEdit }) => {
             key={task.id}
             task={task}
             onEdit={(updatedTask) => {
-              const updatedTasks = tasks.map((t) =>
-                t.id === updatedTask.id ? updatedTask : t
+              setTasks(
+                tasks.map((t) => (t.id === updatedTask.id ? updatedTask : t))
               );
-              setTasks(updatedTasks);
             }}
             onDelete={() => {
-              const updatedTasks = tasks.filter((t) => t.id !== task.id);
-              setTasks(updatedTasks);
+              setTasks(tasks.filter((t) => t.id !== task.id));
             }}
           />
         ))}
@@ -102,6 +115,7 @@ const TaskList = ({ title, onDelete, onEdit }) => {
           type="text"
           value={newTaskTitle}
           onChange={(e) => setNewTaskTitle(e.target.value)}
+          onKeyDown={handleInputKeyDown}
           placeholder="Добавить задачу"
         />
         <button onClick={handleAddTask}>+</button>

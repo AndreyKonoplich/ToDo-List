@@ -1,9 +1,7 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
 
-import '@/styles/components/signupForm.scss';
+import '@/styles/components/authorize.scss';
 
 const SignupForm = ({ onClose }) => {
   return (

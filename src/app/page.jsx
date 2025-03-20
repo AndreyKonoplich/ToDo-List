@@ -10,10 +10,12 @@ export default function Home() {
       </video>
 
       <div className="content">
-        <h1 className="home-title">Приветствуем вас на нашем сайте</h1>
-        <h2 className="home-article">
-          Здесь вы сможете отслеживать ваши задачи
-        </h2>
+        <div className="welcome-wrapper">
+          <h1 className="home-title">Приветствуем вас на нашем сайте</h1>
+          <h2 className="home-article">
+            Здесь вы сможете отслеживать ваши задачи
+          </h2>
+        </div>
         <LoginForm />
       </div>
     </div>

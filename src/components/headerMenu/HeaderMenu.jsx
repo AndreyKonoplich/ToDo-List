@@ -9,7 +9,7 @@ const HeaderMenu = ({ username, onLogout }) => {
       <div className="user-info">
         <span>{username}</span>
         <button onClick={onLogout} className="logout-button">
-          Выйти
+          Выход
         </button>
       </div>
     </header>

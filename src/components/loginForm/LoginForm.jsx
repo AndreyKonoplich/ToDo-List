@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import SignupForm from '@/components/signupForm/SignupForm';
 import Link from 'next/link';
 
-import '@/styles/components/loginForm.scss';
+import '@/styles/components/authorize.scss';
 
 const LoginForm = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);

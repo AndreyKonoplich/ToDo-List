@@ -1,6 +1,9 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
+
+import '@/styles/components/signupForm.scss';
 
 const SignupForm = ({ onClose }) => {
   return (
@@ -51,9 +54,11 @@ const SignupForm = ({ onClose }) => {
               required
             />
           </div>
-          <button type="submit" className="submit-button">
-            Зарегистрироваться
-          </button>
+          <Link href="/main">
+            <button type="submit" className="submit-button">
+              Зарегистрироваться
+            </button>
+          </Link>
         </form>
       </div>
     </div>

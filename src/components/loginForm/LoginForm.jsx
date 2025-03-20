@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import SignupForm from '@/components/signupForm/SignupForm';
+import Link from 'next/link';
 
-import '@/components/loginForm/sass/loginForm.scss';
+import '@/styles/components/loginForm.scss';
 
 const LoginForm = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -49,9 +50,11 @@ const LoginForm = () => {
                   required
                 />
               </div>
-              <button type="submit" className="submit-button">
-                Войти
-              </button>
+              <Link href="/main">
+                <button type="submit" className="submit-button">
+                  Войти
+                </button>
+              </Link>
             </form>
             <p className="signup-link">
               Нет аккаунта?{' '}

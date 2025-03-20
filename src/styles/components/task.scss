@@ -1,0 +1,67 @@
+.task {
+  background-color: #f4f3f3;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: 0.3s ease;
+
+  &:hover {
+    background-color: #e6e6e6;
+  }
+
+  .status-select {
+    margin-bottom: 10px;
+  }
+
+  .status {
+    margin-right: 100px;
+  }
+
+  h4 {
+    margin: 0 0 8px;
+  }
+
+  p {
+    margin: 4px 0;
+  }
+
+  .edit-input {
+    width: 100%;
+    margin-bottom: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .edit-button {
+    margin-right: 8px;
+    background-color: #226f54;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #1b5943;
+    }
+  }
+
+  .name {
+    margin-right: 100px;
+  }
+
+  .delete-button {
+    margin-right: 8px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #e53935;
+    }
+  }
+}

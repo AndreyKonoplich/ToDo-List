@@ -1,0 +1,33 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f9ebe0;
+}
+
+.content-container {
+  display: flex;
+  gap: 10px;
+  padding: 16px;
+  flex-grow: 1;
+  overflow-x: auto;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.add-list-button {
+  background-color: #226f54;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 16px;
+  align-self: flex-start;
+
+  &:hover {
+    background-color: #1b5943;
+  }
+}

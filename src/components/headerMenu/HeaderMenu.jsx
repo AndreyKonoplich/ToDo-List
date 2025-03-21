@@ -2,12 +2,12 @@ import React from 'react';
 
 import '@/styles/components/headerMenu.scss';
 
-const HeaderMenu = ({ username, onLogout }) => {
+const HeaderMenu = ({ onLogout }) => {
   return (
     <header className="header">
       <div className="logo">Task Manager</div>
       <div className="user-info">
-        <span>{username}</span>
+        <span>Коноплич Андрей</span>
         <button onClick={onLogout} className="logout-button">
           Выход
         </button>

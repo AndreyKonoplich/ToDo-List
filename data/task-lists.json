@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "email": "kandrat.71@mail.ru",
+    "title": "Работа",
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Задача 1",
+        "description": "Описание задачи 1",
+        "status": "Нужно сделать",
+        "totalTime": 60,
+        "remainingTime": 30
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "email": "test@example.com",
+    "title": "Личное",
+    "tasks": []
+  }
+]

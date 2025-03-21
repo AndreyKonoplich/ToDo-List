@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "name": "Андрей",
+    "email": "kandrat.71@mail.ru",
+    "password": "12345"
+  },
+  {
+    "id": 2,
+    "name": "Андрей",
+    "email": "kandrat.71@mail.xn--ru-ilc",
+    "password": "123"
+  },
+  {
+    "id": 3,
+    "name": "123",
+    "email": "1@3",
+    "password": "1"
+  },
+  {
+    "id": 4,
+    "name": "123",
+    "email": "333@3",
+    "password": "1"
+  },
+  {
+    "id": 5,
+    "name": "Андрей",
+    "email": "konoplich1999@gmail.com",
+    "password": "123456"
+  },
+  {
+    "id": 6,
+    "name": "123",
+    "email": "mr.konoplich2003@mail.ru",
+    "password": "123456"
+  },
+  {
+    "id": 7,
+    "name": "Andrey",
+    "email": "2@3",
+    "password": "123456"
+  }
+]

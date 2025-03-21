@@ -27,8 +27,12 @@ const TaskListsWrapper = () => {
 
   const handleAddTaskList = async () => {
     try {
-      const response = await taskListsApi.addTaskList({ email });
+      const newList = {
+        title: `Список ${taskLists.length + 1}`,
+        email,
+      };
 
+      const response = await taskListsApi.addTaskList(newList);
       dispatch(addTaskList(response.data));
     } catch (error) {
       console.error('Ошибка при добавлении списка задач:', error);
@@ -37,11 +41,9 @@ const TaskListsWrapper = () => {
 
   return (
     <>
-      {taskLists
-        .filter((list) => !list.isDeleted)
-        .map((list) => (
-          <TaskList key={list.id} id={list.id} />
-        ))}
+      {taskLists.map((list) => (
+        <TaskList key={list.id} id={list.id} />
+      ))}
       <AddTaskList onClick={handleAddTaskList} />
     </>
   );

@@ -18,23 +18,14 @@ export async function DELETE(request) {
     const data = await fs.readFile(taskListsFilePath, 'utf-8');
     const taskLists = JSON.parse(data);
 
-    const taskListIndex = taskLists.findIndex(
-      (list) => list.id === taskListId && list.email === email
+    const updatedTaskLists = taskLists.filter(
+      (list) => !(list.id === taskListId && list.email === email)
     );
 
-    if (taskListIndex === -1) {
-      return NextResponse.json(
-        {
-          error:
-            'Task list not found or you do not have permission to delete it',
-        },
-        { status: 404 }
-      );
-    }
-
-    taskLists.splice(taskListIndex, 1);
-
-    await fs.writeFile(taskListsFilePath, JSON.stringify(taskLists, null, 2));
+    await fs.writeFile(
+      taskListsFilePath,
+      JSON.stringify(updatedTaskLists, null, 2)
+    );
 
     return NextResponse.json(
       { message: 'Task list deleted successfully' },

@@ -4,28 +4,35 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import TaskList from '@/components/taskList/TaskList';
 import AddTaskList from '@/components/addTaskList/AddTaskList';
-import { addTaskList } from '@/store/slices/taskListsSlice';
+import { addTaskList, setTaskLists } from '@/store/slices/taskListsSlice';
+import { taskListsApi } from '@/lib/api/taskLists';
 
-const TaskListsWrapper = ({ initialTaskLists }) => {
+const TaskListsWrapper = () => {
   const dispatch = useDispatch();
   const taskLists = useSelector((state) => state.taskLists);
+  const email = useSelector((state) => state.user.email);
 
   useEffect(() => {
-    if (initialTaskLists && initialTaskLists.length > 0) {
-      initialTaskLists.forEach((list) => {
-        dispatch(
-          addTaskList({
-            id: list.id,
-            title: `Список ${list.id}`,
-            isDeleted: false,
-          })
-        );
-      });
-    }
-  }, [initialTaskLists, dispatch]);
+    const fetchTaskLists = async () => {
+      try {
+        const response = await taskListsApi.getTaskLists(email);
+        dispatch(setTaskLists(response.data));
+      } catch (error) {
+        console.error('Ошибка при получении списков задач:', error);
+      }
+    };
 
-  const handleAddTaskList = () => {
-    dispatch(addTaskList());
+    fetchTaskLists();
+  }, [dispatch, email]);
+
+  const handleAddTaskList = async () => {
+    try {
+      const response = await taskListsApi.addTaskList({ email });
+
+      dispatch(addTaskList(response.data));
+    } catch (error) {
+      console.error('Ошибка при добавлении списка задач:', error);
+    }
   };
 
   return (

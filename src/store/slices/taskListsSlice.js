@@ -34,10 +34,13 @@ const taskListsSlice = createSlice({
         list.title = title;
       }
     },
+
+    setTaskLists: (state, action) => {
+      return action.payload;
+    },
   },
 });
 
-export const { addTaskList, deleteTaskList, setTaskListTitle } =
+export const { addTaskList, deleteTaskList, setTaskLists, setTaskListTitle } =
   taskListsSlice.actions;
-
 export default taskListsSlice.reducer;

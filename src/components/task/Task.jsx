@@ -21,7 +21,9 @@ const Task = ({ taskId, taskListId }) => {
   );
   const editingTask = useSelector((state) => state.tasks.editingTask);
   const isModalOpen = useSelector((state) => state.tasks.isModalOpen);
+  const modalTaskId = useSelector((state) => state.tasks.modalTaskId);
   const isEditing = editingTask?.id === taskId;
+  const isTaskModalOpen = isModalOpen && modalTaskId === taskId;
 
   if (!task) {
     return null;
@@ -37,12 +39,11 @@ const Task = ({ taskId, taskListId }) => {
   };
 
   const handleModalOpen = () => {
-    dispatch(startEditingTask(task));
-    dispatch(openModal());
+    dispatch(openModal(taskId));
   };
 
   const handleModalClose = () => {
-    dispatch(stopEditingTask(task));
+    dispatch(stopEditingTask());
     dispatch(closeModal());
   };
 
@@ -120,9 +121,9 @@ const Task = ({ taskId, taskListId }) => {
         </>
       )}
 
-      {isModalOpen && editingTask?.id === taskId && (
+      {isTaskModalOpen && (
         <TaskModal
-          task={editingTask}
+          task={task}
           onEdit={(updatedTask) =>
             dispatch(editTask({ taskListId, updatedTask }))
           }

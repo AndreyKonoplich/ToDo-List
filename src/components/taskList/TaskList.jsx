@@ -9,6 +9,8 @@ import {
   deleteTaskList,
 } from '@/store/slices/taskListsSlice';
 import { taskListsApi } from '@/lib/api/taskLists';
+import { tasksApi } from '@/lib/api/tasks';
+
 import '@/styles/components/taskList.scss';
 
 const TaskList = ({ id }) => {
@@ -35,7 +37,7 @@ const TaskList = ({ id }) => {
     setLocalTitle(title);
   }, [title]);
 
-  const handleAddTask = () => {
+  const handleAddTask = async () => {
     if (newTaskTitle.trim()) {
       const newTask = {
         id: Date.now(),
@@ -45,8 +47,15 @@ const TaskList = ({ id }) => {
         totalTime: 0,
         remainingTime: 0,
       };
-      dispatch(addTask({ taskListId: id, task: newTask }));
-      setNewTaskTitle('');
+
+      try {
+        await tasksApi.addTask(id, email, newTask);
+
+        dispatch(addTask({ taskListId: id, task: newTask }));
+        setNewTaskTitle('');
+      } catch (error) {
+        console.error('Ошибка при добавлении задачи:', error);
+      }
     }
   };
 
@@ -57,6 +66,7 @@ const TaskList = ({ id }) => {
   const handleSaveTitle = async () => {
     try {
       await taskListsApi.updateTaskListTitle(id, email, localTitle);
+
       dispatch(setTaskListTitle({ taskListId: id, title: localTitle }));
       setIsEditing(false);
     } catch (error) {
@@ -82,6 +92,7 @@ const TaskList = ({ id }) => {
   const handleDeleteList = async () => {
     try {
       await taskListsApi.deleteTaskList(id, email);
+
       dispatch(deleteTaskList({ taskListId: id }));
     } catch (error) {
       console.error('Ошибка при удалении списка задач:', error);

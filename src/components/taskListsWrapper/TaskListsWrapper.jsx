@@ -6,6 +6,7 @@ import TaskList from '@/components/taskList/TaskList';
 import AddTaskList from '@/components/addTaskList/AddTaskList';
 import { addTaskList, setTaskLists } from '@/store/slices/taskListsSlice';
 import { taskListsApi } from '@/lib/api/taskLists';
+import { tasksApi } from '@/lib/api/tasks';
 
 const TaskListsWrapper = () => {
   const dispatch = useDispatch();
@@ -17,6 +18,14 @@ const TaskListsWrapper = () => {
       try {
         const response = await taskListsApi.getTaskLists(email);
         dispatch(setTaskLists(response.data));
+
+        response.data.forEach(async (list) => {
+          const tasksResponse = await tasksApi.getTasks(list.id, email);
+          dispatch({
+            type: 'tasks/setTasks',
+            payload: { taskListId: list.id, tasks: tasksResponse.data },
+          });
+        });
       } catch (error) {
         console.error('Ошибка при получении списков задач:', error);
       }

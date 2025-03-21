@@ -11,6 +11,7 @@ import {
   openModal,
   closeModal,
 } from '@/store/slices/tasksSlice';
+import { tasksApi } from '@/lib/api/tasks';
 
 import '@/styles/components/task.scss';
 
@@ -24,15 +25,22 @@ const Task = ({ taskId, taskListId }) => {
   const modalTaskId = useSelector((state) => state.tasks.modalTaskId);
   const isEditing = editingTask?.id === taskId;
   const isTaskModalOpen = isModalOpen && modalTaskId === taskId;
+  const email = useSelector((state) => state.user.email);
 
   if (!task) {
     return null;
   }
 
-  const handleSave = (updatedTask) => {
+  const handleSave = async (updatedTask) => {
     if (updatedTask) {
-      dispatch(editTask({ taskListId, updatedTask }));
-      dispatch(stopEditingTask());
+      try {
+        await tasksApi.updateTask(taskListId, email, updatedTask);
+
+        dispatch(editTask({ taskListId, updatedTask }));
+        dispatch(stopEditingTask());
+      } catch (error) {
+        console.error('Ошибка при обновлении задачи:', error);
+      }
     } else {
       console.error('Updated task is null');
     }
@@ -49,6 +57,16 @@ const Task = ({ taskId, taskListId }) => {
 
   const handleStartEditing = () => {
     dispatch(startEditingTask(task));
+  };
+
+  const handleDelete = async () => {
+    try {
+      await tasksApi.deleteTask(taskListId, email, taskId);
+      dispatch(deleteTask({ taskListId, taskId }));
+      dispatch(closeModal());
+    } catch (error) {
+      console.error('Ошибка при удалении задачи:', error);
+    }
   };
 
   return (
@@ -109,12 +127,7 @@ const Task = ({ taskId, taskListId }) => {
             <button onClick={handleStartEditing} className="edit-button">
               Редактировать
             </button>
-            <button
-              onClick={() =>
-                dispatch(deleteTask({ taskListId, taskId: task.id }))
-              }
-              className="delete-button"
-            >
+            <button onClick={handleDelete} className="delete-button">
               Удалить
             </button>
           </div>
@@ -127,7 +140,7 @@ const Task = ({ taskId, taskListId }) => {
           onEdit={(updatedTask) =>
             dispatch(editTask({ taskListId, updatedTask }))
           }
-          onDelete={() => dispatch(deleteTask({ taskListId, taskId: task.id }))}
+          onDelete={handleDelete}
           onClose={handleModalClose}
           onSave={handleSave}
         />

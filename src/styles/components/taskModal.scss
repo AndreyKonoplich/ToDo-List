@@ -67,6 +67,10 @@
         min-height: 100px;
       }
 
+      .task-modal-date-input-container {
+        z-index: 100;
+      }
+
       .task-modal-edit-buttons {
         display: flex;
         gap: 8px;

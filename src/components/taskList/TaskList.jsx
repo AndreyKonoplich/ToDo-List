@@ -21,7 +21,7 @@ const TaskList = ({ id }) => {
     state.taskLists.find((list) => list.id === id)
   );
   const email = useSelector((state) => state.user.email);
-  const title = taskList?.title || `Список`;
+  const title = taskList?.title || `Новый список`;
   const isDeleted = taskList?.isDeleted || false;
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [isEditing, setIsEditing] = useState(false);

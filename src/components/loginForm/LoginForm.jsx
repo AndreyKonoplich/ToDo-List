@@ -7,11 +7,17 @@ import { loginSuccess } from '@/store/slices/userSlice';
 import { authApi } from '@/lib/api/auth';
 import SignupForm from '@/components/signupForm/SignupForm';
 
+import { Snackbar, Alert } from '@mui/material';
+
 import '@/styles/components/authorize.scss';
 
 const LoginForm = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -21,6 +27,10 @@ const LoginForm = () => {
   const openSignupModal = () => setIsSignupModalOpen(true);
   const closeSignupModal = () => setIsSignupModalOpen(false);
 
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -29,17 +39,23 @@ const LoginForm = () => {
     const password = formData.get('password');
 
     if (!email || !password) {
-      alert('Заполните все поля');
+      setSnackbarMessage('Заполните все поля');
+      setSnackbarSeverity('warning');
+      setSnackbarOpen(true);
       return;
     }
 
     try {
       const response = await authApi.login({ email, password });
       dispatch(loginSuccess(email));
-      alert(response.data.message);
+      setSnackbarMessage(response.data.message);
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
       router.push('/main');
     } catch (error) {
-      alert(error.response?.data?.error || 'Ошибка при входе');
+      setSnackbarMessage(error.response?.data?.error || 'Ошибка при входе');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     }
   };
 
@@ -92,6 +108,18 @@ const LoginForm = () => {
       )}
 
       {isSignupModalOpen && <SignupForm onClose={closeSignupModal} />}
+
+      {/* Snackbar */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

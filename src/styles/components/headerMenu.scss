@@ -3,9 +3,9 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: #226f54;
+  background-color: #245d48;
   color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.336);
 
   .logo {
     font-size: 1.5rem;
@@ -18,20 +18,23 @@
     gap: 30px;
 
     span {
-      font-size: 1rem;
+      font-size: 18px;
+      font-weight: bold;
     }
 
     .logout-button {
-      background: #f9ebe0;
-      border: 1px solid white;
+      background-color: #e0f2e9;
+      border: none;
+      outline: none;
       color: #226f54;
       padding: 5px 10px;
       border-radius: 15px;
+      font-size: 16px;
       cursor: pointer;
       transition: background-color 0.3s ease;
 
       &:hover {
-        background-color: rgb(252, 253, 234);
+        background-color: #c7d7cf;
       }
     }
   }

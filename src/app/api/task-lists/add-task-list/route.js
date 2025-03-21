@@ -24,7 +24,7 @@ export async function POST(request) {
 
     const newTaskList = {
       id: newId,
-      title: `Список ${newId}`,
+      title: `Новый список`,
       email,
       tasks: [],
       isDeleted: false,

@@ -38,7 +38,7 @@ const TaskListsWrapper = () => {
   const handleAddTaskList = async () => {
     try {
       const newList = {
-        title: `Список ${taskLists.length + 1}`,
+        title: `Новый список`,
         email,
       };
 

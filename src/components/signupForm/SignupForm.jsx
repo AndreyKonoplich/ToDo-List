@@ -1,16 +1,21 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { loginSuccess } from '@/store/slices/userSlice';
 import { authApi } from '@/lib/api/auth';
+import { Snackbar, Alert } from '@mui/material';
 
 import '@/styles/components/authorize.scss';
 
 const SignupForm = ({ onClose }) => {
   const router = useRouter();
   const dispatch = useDispatch();
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
   const validate = (name, email, password, confirmPassword) => {
     let errorMessage = '';
@@ -36,7 +41,9 @@ const SignupForm = ({ onClose }) => {
     }
 
     if (errorMessage) {
-      alert(errorMessage);
+      setSnackbarMessage(errorMessage);
+      setSnackbarSeverity('warning');
+      setSnackbarOpen(true);
       return false;
     }
 
@@ -59,11 +66,21 @@ const SignupForm = ({ onClose }) => {
     try {
       const response = await authApi.register({ name, email, password });
       dispatch(loginSuccess(email));
-      alert(response.data.message);
+      setSnackbarMessage(response.data.message);
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
       router.push('/main');
     } catch (error) {
-      alert(error.response?.data?.error || 'Ошибка при регистрации');
+      setSnackbarMessage(
+        error.response?.data?.error || 'Ошибка при регистрации'
+      );
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -119,6 +136,17 @@ const SignupForm = ({ onClose }) => {
           </button>
         </form>
       </div>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

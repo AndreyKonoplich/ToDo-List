@@ -5,6 +5,7 @@ const initialState = {
   taskLists: {},
   editingTask: null,
   isModalOpen: false,
+  modalTaskId: null,
 };
 
 const tasksSlice = createSlice({
@@ -41,11 +42,13 @@ const tasksSlice = createSlice({
     stopEditingTask: (state) => {
       state.editingTask = null;
     },
-    openModal: (state) => {
+    openModal: (state, action) => {
       state.isModalOpen = true;
+      state.modalTaskId = action.payload;
     },
     closeModal: (state) => {
       state.isModalOpen = false;
+      state.modalTaskId = null;
     },
   },
 });

@@ -14,14 +14,11 @@ import '@/styles/components/taskList.scss';
 const TaskList = ({ id }) => {
   const dispatch = useDispatch();
   const tasks = useSelector((state) => state.tasks.taskLists[id] || []);
-  const title = useSelector(
-    (state) =>
-      state.taskLists.find((list) => list.id === id)?.title || `Список ${id}`
+  const taskList = useSelector((state) =>
+    state.taskLists.find((list) => list.id === id)
   );
-  const isDeleted = useSelector(
-    (state) =>
-      state.taskLists.find((list) => list.id === id)?.isDeleted || false
-  );
+  const title = taskList?.title || `Список ${id}`;
+  const isDeleted = taskList?.isDeleted || false;
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [localTitle, setLocalTitle] = useState(title);

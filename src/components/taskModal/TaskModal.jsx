@@ -6,10 +6,6 @@ const TaskModal = ({ task, onEdit, onDelete, onClose, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [localEditedTask, setLocalEditedTask] = useState(task);
 
-  useEffect(() => {
-    setLocalEditedTask(task);
-  }, [task]);
-
   const handleSave = () => {
     onEdit(localEditedTask);
     onSave(localEditedTask);

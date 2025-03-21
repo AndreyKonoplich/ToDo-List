@@ -23,8 +23,8 @@ const SignupForm = ({ onClose }) => {
       errorMessage += 'Некорректный email.\n';
     }
 
-    if (password.length < 6) {
-      errorMessage += 'Пароль должен содержать минимум 6 символов.\n';
+    if (password.length < 5) {
+      errorMessage += 'Пароль должен содержать минимум 5 символов.\n';
     }
 
     if (password.length > 30) {

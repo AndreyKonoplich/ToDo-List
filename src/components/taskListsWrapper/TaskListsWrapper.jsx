@@ -15,6 +15,7 @@ const TaskListsWrapper = () => {
 
   useEffect(() => {
     const fetchTaskLists = async () => {
+      if (!email) return;
       try {
         const response = await taskListsApi.getTaskLists(email);
         dispatch(setTaskLists(response.data));

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Task from '@/components/task/Task';
 import { addTask } from '@/store/slices/tasksSlice';
@@ -15,7 +15,8 @@ import '@/styles/components/taskList.scss';
 
 const TaskList = ({ id }) => {
   const dispatch = useDispatch();
-  const tasks = useSelector((state) => state.tasks.taskLists?.[id] || []);
+  const tasks = useSelector((state) => state.tasks.taskLists?.[id]);
+  const memoizedTasks = useMemo(() => tasks || [], [tasks]);
   const taskList = useSelector((state) =>
     state.taskLists.find((list) => list.id === id)
   );
@@ -139,7 +140,7 @@ const TaskList = ({ id }) => {
         </div>
       </div>
       <div className="tasks">
-        {tasks.map((task) => (
+        {memoizedTasks.map((task) => (
           <Task key={task.id} taskId={task.id} taskListId={id} />
         ))}
       </div>

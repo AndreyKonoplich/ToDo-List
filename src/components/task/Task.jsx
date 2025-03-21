@@ -1,24 +1,53 @@
-import React, { useState } from 'react';
+'use client';
+
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import TaskModal from '@/components/taskModal/TaskModal';
+import {
+  editTask,
+  deleteTask,
+  startEditingTask,
+  stopEditingTask,
+  openModal,
+  closeModal,
+} from '@/store/slices/tasksSlice';
 
 import '@/styles/components/task.scss';
 
-const Task = ({ task, onEdit, onDelete }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedTask, setEditedTask] = useState(task);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const Task = ({ taskId, taskListId }) => {
+  const dispatch = useDispatch();
+  const task = useSelector((state) =>
+    state.tasks.taskLists[taskListId]?.find((t) => t.id === taskId)
+  );
+  const editingTask = useSelector((state) => state.tasks.editingTask);
+  const isModalOpen = useSelector((state) => state.tasks.isModalOpen);
+  const isEditing = editingTask?.id === taskId;
 
-  const handleSave = () => {
-    onEdit(editedTask);
-    setIsEditing(false);
+  if (!task) {
+    return null;
+  }
+
+  const handleSave = (updatedTask) => {
+    if (updatedTask) {
+      dispatch(editTask({ taskListId, updatedTask }));
+      dispatch(stopEditingTask());
+    } else {
+      console.error('Updated task is null');
+    }
   };
 
   const handleModalOpen = () => {
-    setIsModalOpen(true);
+    dispatch(startEditingTask(task));
+    dispatch(openModal());
   };
 
   const handleModalClose = () => {
-    setIsModalOpen(false);
+    dispatch(stopEditingTask(task));
+    dispatch(closeModal());
+  };
+
+  const handleStartEditing = () => {
+    dispatch(startEditingTask(task));
   };
 
   return (
@@ -28,17 +57,21 @@ const Task = ({ task, onEdit, onDelete }) => {
           <span className="name">Название:</span>
           <input
             type="text"
-            value={editedTask.title}
+            value={editingTask.title}
             onChange={(e) =>
-              setEditedTask({ ...editedTask, title: e.target.value })
+              dispatch(
+                startEditingTask({ ...editingTask, title: e.target.value })
+              )
             }
             className="edit-input"
           />
           <span className="status">Статус:</span>
           <select
-            value={editedTask.status}
+            value={editingTask.status}
             onChange={(e) =>
-              setEditedTask({ ...editedTask, status: e.target.value })
+              dispatch(
+                startEditingTask({ ...editingTask, status: e.target.value })
+              )
             }
             className="status-select"
           >
@@ -48,11 +81,14 @@ const Task = ({ task, onEdit, onDelete }) => {
             <option value="Отложено">Отложено</option>
           </select>
           <div className="edit-buttons">
-            <button onClick={handleSave} className="edit-button">
+            <button
+              onClick={() => handleSave(editingTask)}
+              className="edit-button"
+            >
               Сохранить
             </button>
             <button
-              onClick={() => setIsEditing(false)}
+              onClick={() => dispatch(stopEditingTask())}
               className="delete-button"
             >
               Отмена
@@ -62,28 +98,35 @@ const Task = ({ task, onEdit, onDelete }) => {
       ) : (
         <>
           <div onClick={handleModalOpen} className="task-content">
-            <h4>{editedTask.title}</h4>
-            <p>Статус: {editedTask.status}</p>
-            <p>Общее время: {editedTask.totalTime}</p>
-            <p>Осталось времени: {editedTask.remainingTime}</p>
+            <h4>{task.title}</h4>
+            <p>Статус: {task.status}</p>
+            <p>Общее время: {task.totalTime}</p>
+            <p>Осталось времени: {task.remainingTime}</p>
           </div>
 
           <div className="task-actions">
-            <button onClick={() => setIsEditing(true)} className="edit-button">
+            <button onClick={handleStartEditing} className="edit-button">
               Редактировать
             </button>
-            <button onClick={onDelete} className="delete-button">
+            <button
+              onClick={() =>
+                dispatch(deleteTask({ taskListId, taskId: task.id }))
+              }
+              className="delete-button"
+            >
               Удалить
             </button>
           </div>
         </>
       )}
 
-      {isModalOpen && (
+      {isModalOpen && editingTask?.id === taskId && (
         <TaskModal
-          task={editedTask}
-          onEdit={setEditedTask}
-          onDelete={onDelete}
+          task={editingTask}
+          onEdit={(updatedTask) =>
+            dispatch(editTask({ taskListId, updatedTask }))
+          }
+          onDelete={() => dispatch(deleteTask({ taskListId, taskId: task.id }))}
           onClose={handleModalClose}
           onSave={handleSave}
         />

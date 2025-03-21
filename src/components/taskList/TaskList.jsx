@@ -1,16 +1,30 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Task from '@/components/task/Task';
+import { addTask } from '@/store/slices/tasksSlice';
+import {
+  setTaskListTitle,
+  deleteTaskList,
+} from '@/store/slices/taskListsSlice';
 
 import '@/styles/components/taskList.scss';
 
 const TaskList = ({ id }) => {
-  const [tasks, setTasks] = useState([]);
+  const dispatch = useDispatch();
+  const tasks = useSelector((state) => state.tasks.taskLists[id] || []);
+  const title = useSelector(
+    (state) =>
+      state.taskLists.find((list) => list.id === id)?.title || `Список ${id}`
+  );
+  const isDeleted = useSelector(
+    (state) =>
+      state.taskLists.find((list) => list.id === id)?.isDeleted || false
+  );
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [isEditing, setIsEditing] = useState(false);
-  const [title, setTitle] = useState(`Список ${id}`);
-  const [isDeleted, setIsDeleted] = useState(false);
+  const [localTitle, setLocalTitle] = useState(title);
   const editInputRef = useRef(null);
 
   useEffect(() => {
@@ -19,44 +33,55 @@ const TaskList = ({ id }) => {
     }
   }, [isEditing]);
 
+  useEffect(() => {
+    setLocalTitle(title);
+  }, [title]);
+
   const handleAddTask = () => {
     if (newTaskTitle.trim()) {
-      setTasks([...tasks, { id: Date.now(), title: newTaskTitle }]);
+      const newTask = {
+        title: newTaskTitle,
+        status: 'Нужно сделать',
+        description: '',
+        totalTime: 0,
+        remainingTime: 0,
+      };
+      dispatch(addTask({ taskListId: id, task: newTask }));
       setNewTaskTitle('');
     }
   };
 
   const handleEditTitle = () => {
-    setIsEditing(true); // Открываем инпут для редактирования
+    setIsEditing(true);
   };
 
   const handleSaveTitle = () => {
-    setIsEditing(false); // Сохраняем и закрываем инпут
+    dispatch(setTaskListTitle({ taskListId: id, title: localTitle }));
+    setIsEditing(false);
   };
 
   const handleSaveOnBlur = (e) => {
-    // Проверяем, связан ли blur с кликом на кнопку "Сохранить"
     if (
       !e.relatedTarget ||
       !e.relatedTarget.classList.contains('save-button')
     ) {
-      setIsEditing(false); // Закрываем инпут только если blur не вызван кнопкой "Сохранить"
+      handleSaveTitle();
     }
   };
 
   const handleSaveOnEnter = (e) => {
     if (e.key === 'Enter') {
-      setIsEditing(false); // Закрываем инпут при нажатии Enter
+      handleSaveTitle();
     }
   };
 
   const handleDeleteList = () => {
-    setIsDeleted(true);
+    dispatch(deleteTaskList({ taskListId: id }));
   };
 
   const handleInputKeyDown = (e) => {
     if (e.key === 'Enter') {
-      handleAddTask(); // Добавляем задачу при нажатии Enter
+      handleAddTask();
     }
   };
 
@@ -68,8 +93,8 @@ const TaskList = ({ id }) => {
         {isEditing ? (
           <input
             type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            value={localTitle}
+            onChange={(e) => setLocalTitle(e.target.value)}
             onBlur={handleSaveOnBlur}
             onKeyDown={handleSaveOnEnter}
             ref={editInputRef}
@@ -95,18 +120,7 @@ const TaskList = ({ id }) => {
       </div>
       <div className="tasks">
         {tasks.map((task) => (
-          <Task
-            key={task.id}
-            task={task}
-            onEdit={(updatedTask) => {
-              setTasks(
-                tasks.map((t) => (t.id === updatedTask.id ? updatedTask : t))
-              );
-            }}
-            onDelete={() => {
-              setTasks(tasks.filter((t) => t.id !== task.id));
-            }}
-          />
+          <Task key={task.id} taskId={task.id} taskListId={id} />
         ))}
       </div>
       <div className="add-task">
@@ -118,7 +132,7 @@ const TaskList = ({ id }) => {
           onKeyDown={handleInputKeyDown}
           placeholder="Добавить задачу"
         />
-        <button onClick={handleAddTask}>+</button>
+        <button onClick={handleAddTask}>+</button>{' '}
       </div>
     </div>
   );

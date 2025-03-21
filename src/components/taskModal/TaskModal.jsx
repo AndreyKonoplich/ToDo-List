@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import '@/styles/components/taskModal.scss';
 
@@ -6,9 +6,13 @@ const TaskModal = ({ task, onEdit, onDelete, onClose, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [localEditedTask, setLocalEditedTask] = useState(task);
 
+  useEffect(() => {
+    setLocalEditedTask(task);
+  }, [task]);
+
   const handleSave = () => {
     onEdit(localEditedTask);
-    onSave();
+    onSave(localEditedTask);
     setIsEditing(false);
   };
 
@@ -19,10 +23,11 @@ const TaskModal = ({ task, onEdit, onDelete, onClose, onSave }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setLocalEditedTask((prevTask) => ({
-      ...prevTask,
+    const updatedTask = {
+      ...localEditedTask,
       [name]: value,
-    }));
+    };
+    setLocalEditedTask(updatedTask);
   };
 
   return (

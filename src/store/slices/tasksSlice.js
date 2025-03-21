@@ -1,26 +1,22 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { v4 as uuidv4 } from 'uuid';
-
-const initialState = {
-  taskLists: {},
-  editingTask: null,
-  isModalOpen: false,
-  modalTaskId: null,
-};
+import { createSlice, createAction } from '@reduxjs/toolkit';
 
 const tasksSlice = createSlice({
   name: 'tasks',
-  initialState,
+  initialState: {
+    taskLists: {},
+    editingTask: null,
+  },
   reducers: {
     addTask: (state, action) => {
       const { taskListId, task } = action.payload;
       if (!state.taskLists[taskListId]) {
         state.taskLists[taskListId] = [];
       }
-      state.taskLists[taskListId].push({
-        ...task,
-        id: uuidv4(),
-      });
+      state.taskLists[taskListId].push(task);
+    },
+    setTasks: (state, action) => {
+      const { taskListId, tasks } = action.payload;
+      state.taskLists[taskListId] = tasks;
     },
     deleteTask: (state, action) => {
       const { taskListId, taskId } = action.payload;
@@ -30,10 +26,11 @@ const tasksSlice = createSlice({
     },
     editTask: (state, action) => {
       const { taskListId, updatedTask } = action.payload;
-      const tasks = state.taskLists[taskListId];
-      const taskIndex = tasks.findIndex((task) => task.id === updatedTask.id);
+      const taskIndex = state.taskLists[taskListId].findIndex(
+        (task) => task.id === updatedTask.id
+      );
       if (taskIndex !== -1) {
-        tasks[taskIndex] = updatedTask;
+        state.taskLists[taskListId][taskIndex] = updatedTask;
       }
     },
     startEditingTask: (state, action) => {
@@ -55,6 +52,7 @@ const tasksSlice = createSlice({
 
 export const {
   addTask,
+  setTasks,
   deleteTask,
   editTask,
   startEditingTask,
@@ -62,5 +60,4 @@ export const {
   openModal,
   closeModal,
 } = tasksSlice.actions;
-
 export default tasksSlice.reducer;

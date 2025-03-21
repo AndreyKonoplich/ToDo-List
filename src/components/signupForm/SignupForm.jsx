@@ -1,9 +1,88 @@
-import React from 'react';
-import Link from 'next/link';
+'use client';
+
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '@/store/slices/userSlice';
+import { authApi } from '@/lib/api/auth';
+import { Snackbar, Alert } from '@mui/material';
 
 import '@/styles/components/authorize.scss';
 
 const SignupForm = ({ onClose }) => {
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+
+  const validate = (name, email, password, confirmPassword) => {
+    let errorMessage = '';
+
+    if (name.length > 20) {
+      errorMessage += 'Имя не должно превышать 20 символов.\n';
+    }
+
+    if (!email.includes('@')) {
+      errorMessage += 'Некорректный email.\n';
+    }
+
+    if (password.length < 5) {
+      errorMessage += 'Пароль должен содержать минимум 5 символов.\n';
+    }
+
+    if (password.length > 30) {
+      errorMessage += 'Пароль не должен превышать 30 символов.\n';
+    }
+
+    if (password !== confirmPassword) {
+      errorMessage += 'Пароли не совпадают.\n';
+    }
+
+    if (errorMessage) {
+      setSnackbarMessage(errorMessage);
+      setSnackbarSeverity('warning');
+      setSnackbarOpen(true);
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const name = formData.get('name').trim();
+    const email = formData.get('email').trim();
+    const password = formData.get('password');
+    const confirmPassword = formData.get('confirm-password');
+
+    if (!validate(name, email, password, confirmPassword)) {
+      return;
+    }
+
+    try {
+      const response = await authApi.register({ name, email, password });
+      dispatch(loginSuccess(email));
+      setSnackbarMessage(response.data.message);
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+      router.push('/main');
+    } catch (error) {
+      setSnackbarMessage(
+        error.response?.data?.error || 'Ошибка при регистрации'
+      );
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
   return (
     <div className="modal-overview">
       <div className="modal-content">
@@ -11,7 +90,7 @@ const SignupForm = ({ onClose }) => {
           <img src="/assets/icons/cross.svg" alt="Закрыть" />
         </button>
         <h2>Регистрация</h2>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Имя</label>
             <input
@@ -25,7 +104,7 @@ const SignupForm = ({ onClose }) => {
           <div className="form-group">
             <label htmlFor="email">E-mail</label>
             <input
-              type="text"
+              type="email"
               id="email"
               name="email"
               placeholder="Введите вашу почту"
@@ -52,13 +131,22 @@ const SignupForm = ({ onClose }) => {
               required
             />
           </div>
-          <Link href="/main">
-            <button type="submit" className="submit-button">
-              Зарегистрироваться
-            </button>
-          </Link>
+          <button type="submit" className="submit-button">
+            Зарегистрироваться
+          </button>
         </form>
       </div>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

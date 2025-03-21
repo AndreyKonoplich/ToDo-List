@@ -2,9 +2,45 @@ import React, { useState, useEffect } from 'react';
 
 import '@/styles/components/taskModal.scss';
 
+const formatDate = (date) => {
+  if (!date) return '';
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return '';
+  const day = d.getDate().toString().padStart(2, '0');
+  const month = (d.getMonth() + 1).toString().padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}.${month}.${year}`;
+};
+
+const getRemainingDaysText = (remainingDays) => {
+  if (remainingDays === 'Задача просрочена') return remainingDays;
+  if (remainingDays === 1) return `${remainingDays} день`;
+  if (remainingDays >= 2 && remainingDays <= 4) return `${remainingDays} дня`;
+  return `${remainingDays} дней`;
+};
+
 const TaskModal = ({ task, onEdit, onDelete, onClose, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [localEditedTask, setLocalEditedTask] = useState(task);
+  const [remainingDays, setRemainingDays] = useState('');
+
+  useEffect(() => {
+    if (task?.totalTime) {
+      const totalTime = new Date(task.totalTime);
+      if (isNaN(totalTime.getTime())) {
+        setRemainingDays('');
+      } else {
+        const today = new Date();
+        const diffTime = totalTime - today;
+        const diffDays = Math.floor(diffTime / (1000 * 3600 * 24));
+        setRemainingDays(
+          diffDays > 0 ? getRemainingDaysText(diffDays) : 'Задача просрочена'
+        );
+      }
+    } else {
+      setRemainingDays('');
+    }
+  }, [task?.totalTime]);
 
   const handleSave = () => {
     onEdit(localEditedTask);
@@ -65,23 +101,28 @@ const TaskModal = ({ task, onEdit, onDelete, onClose, onSave }) => {
                 <option value="Завершено">Завершено</option>
                 <option value="Отложено">Отложено</option>
               </select>
-              <span className="name">Время на выполнение:</span>
-              <input
-                type="text"
-                name="totalTime"
-                value={localEditedTask.totalTime}
-                onChange={handleChange}
-                className="task-modal-edit-input"
-                placeholder="Общее время на задачу"
-              />
-              <span className="name">Оставшееся время:</span>
+              <span className="name">Окончательный срок:</span>
+              <div className="task-modal-date-input-container">
+                <input
+                  type="date"
+                  name="totalTime"
+                  value={
+                    localEditedTask.totalTime
+                      ? localEditedTask.totalTime.slice(0, 10)
+                      : ''
+                  }
+                  onChange={handleChange}
+                  className="task-modal-edit-input"
+                  placeholder="Общее время на задачу"
+                />
+              </div>
+              <span className="name">Осталось:</span>
               <input
                 type="text"
                 name="remainingTime"
-                value={localEditedTask.remainingTime}
-                onChange={handleChange}
+                value={remainingDays}
                 className="task-modal-edit-input"
-                placeholder="Оставшееся время"
+                readOnly
               />
               <div className="task-modal-edit-buttons">
                 <button onClick={handleSave} className="task-modal-save-button">
@@ -107,10 +148,11 @@ const TaskModal = ({ task, onEdit, onDelete, onClose, onSave }) => {
                 <strong>Статус:</strong> {task.status}
               </p>
               <p>
-                <strong>Общее время:</strong> {task.totalTime}
+                <strong>Окончательный срок:</strong>{' '}
+                {formatDate(task.totalTime)}
               </p>
               <p>
-                <strong>Осталось времени:</strong> {task.remainingTime}
+                <strong>Осталось:</strong> {remainingDays}
               </p>
               <div className="task-modal-actions">
                 <button
@@ -119,7 +161,10 @@ const TaskModal = ({ task, onEdit, onDelete, onClose, onSave }) => {
                 >
                   Редактировать
                 </button>
-                <button onClick={onDelete} className="task-modal-delete-button">
+                <button
+                  onClick={() => onDelete(task)}
+                  className="task-modal-delete-button"
+                >
                   Удалить
                 </button>
               </div>

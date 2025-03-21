@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Task from '@/components/task/Task';
 import { addTask } from '@/store/slices/tasksSlice';
@@ -8,16 +8,20 @@ import {
   setTaskListTitle,
   deleteTaskList,
 } from '@/store/slices/taskListsSlice';
+import { taskListsApi } from '@/lib/api/taskLists';
+import { tasksApi } from '@/lib/api/tasks';
 
 import '@/styles/components/taskList.scss';
 
 const TaskList = ({ id }) => {
   const dispatch = useDispatch();
-  const tasks = useSelector((state) => state.tasks.taskLists[id] || []);
+  const tasks = useSelector((state) => state.tasks.taskLists?.[id]);
+  const memoizedTasks = useMemo(() => tasks || [], [tasks]);
   const taskList = useSelector((state) =>
     state.taskLists.find((list) => list.id === id)
   );
-  const title = taskList?.title || `Список ${id}`;
+  const email = useSelector((state) => state.user.email);
+  const title = taskList?.title || `Новый список`;
   const isDeleted = taskList?.isDeleted || false;
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [isEditing, setIsEditing] = useState(false);
@@ -34,17 +38,25 @@ const TaskList = ({ id }) => {
     setLocalTitle(title);
   }, [title]);
 
-  const handleAddTask = () => {
+  const handleAddTask = async () => {
     if (newTaskTitle.trim()) {
       const newTask = {
+        id: Date.now(),
         title: newTaskTitle,
         status: 'Нужно сделать',
         description: '',
         totalTime: 0,
         remainingTime: 0,
       };
-      dispatch(addTask({ taskListId: id, task: newTask }));
-      setNewTaskTitle('');
+
+      try {
+        await tasksApi.addTask(id, email, newTask);
+
+        dispatch(addTask({ taskListId: id, task: newTask }));
+        setNewTaskTitle('');
+      } catch (error) {
+        console.error('Ошибка при добавлении задачи:', error);
+      }
     }
   };
 
@@ -52,9 +64,15 @@ const TaskList = ({ id }) => {
     setIsEditing(true);
   };
 
-  const handleSaveTitle = () => {
-    dispatch(setTaskListTitle({ taskListId: id, title: localTitle }));
-    setIsEditing(false);
+  const handleSaveTitle = async () => {
+    try {
+      await taskListsApi.updateTaskListTitle(id, email, localTitle);
+
+      dispatch(setTaskListTitle({ taskListId: id, title: localTitle }));
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Ошибка при обновлении названия списка задач:', error);
+    }
   };
 
   const handleSaveOnBlur = (e) => {
@@ -72,8 +90,14 @@ const TaskList = ({ id }) => {
     }
   };
 
-  const handleDeleteList = () => {
-    dispatch(deleteTaskList({ taskListId: id }));
+  const handleDeleteList = async () => {
+    try {
+      await taskListsApi.deleteTaskList(id, email);
+
+      dispatch(deleteTaskList({ taskListId: id }));
+    } catch (error) {
+      console.error('Ошибка при удалении списка задач:', error);
+    }
   };
 
   const handleInputKeyDown = (e) => {
@@ -116,7 +140,7 @@ const TaskList = ({ id }) => {
         </div>
       </div>
       <div className="tasks">
-        {tasks.map((task) => (
+        {memoizedTasks.map((task) => (
           <Task key={task.id} taskId={task.id} taskListId={id} />
         ))}
       </div>
@@ -129,7 +153,7 @@ const TaskList = ({ id }) => {
           onKeyDown={handleInputKeyDown}
           placeholder="Добавить задачу"
         />
-        <button onClick={handleAddTask}>+</button>{' '}
+        <button onClick={handleAddTask}>+</button>
       </div>
     </div>
   );

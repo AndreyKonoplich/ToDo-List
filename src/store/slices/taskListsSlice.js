@@ -6,27 +6,16 @@ const taskListsSlice = createSlice({
   name: 'taskLists',
   initialState,
   reducers: {
-    addTaskList: (state) => {
-      const maxId = state.reduce(
-        (max, list) => (list.id > max ? list.id : max),
-        0
-      );
-      const newListId = maxId + 1;
-      state.push({
-        id: newListId,
-        title: `Список ${newListId}`,
-        isDeleted: false,
-      });
+    setTaskLists: (state, action) => {
+      return action.payload;
     },
-
+    addTaskList: (state, action) => {
+      state.push(action.payload);
+    },
     deleteTaskList: (state, action) => {
       const { taskListId } = action.payload;
-      const list = state.find((list) => list.id === taskListId);
-      if (list) {
-        list.isDeleted = true;
-      }
+      return state.filter((list) => list.id !== taskListId);
     },
-
     setTaskListTitle: (state, action) => {
       const { taskListId, title } = action.payload;
       const list = state.find((list) => list.id === taskListId);
@@ -37,7 +26,6 @@ const taskListsSlice = createSlice({
   },
 });
 
-export const { addTaskList, deleteTaskList, setTaskListTitle } =
+export const { setTaskLists, addTaskList, deleteTaskList, setTaskListTitle } =
   taskListsSlice.actions;
-
 export default taskListsSlice.reducer;

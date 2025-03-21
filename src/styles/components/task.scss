@@ -23,8 +23,8 @@
 
   h4 {
     margin: 0 0 8px;
-    word-wrap: break-word; // Перенос текста на новую строку
-    overflow-wrap: break-word; // Альтернативное свойство для переноса
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
   p {
@@ -54,6 +54,10 @@
 
   .name {
     margin-right: 100px;
+  }
+
+  .deadline-input {
+    margin-bottom: 10px;
   }
 
   .delete-button {

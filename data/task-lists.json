@@ -3,15 +3,21 @@
     "id": 1,
     "title": "Новый список",
     "email": "kandrat.71@mail.ru",
-    "tasks": [
-      {
-        "id": 1742633688720,
-        "title": "123",
-        "status": "Нужно сделать",
-        "description": "",
-        "totalTime": "2025-03-25"
-      }
-    ],
+    "tasks": [],
+    "isDeleted": false
+  },
+  {
+    "id": 3,
+    "title": "Новый список",
+    "email": "kandrat.71@mail.ru",
+    "tasks": [],
+    "isDeleted": false
+  },
+  {
+    "id": 4,
+    "title": "Новый список",
+    "email": "kandrat.71@mail.ru",
+    "tasks": [],
     "isDeleted": false
   }
 ]

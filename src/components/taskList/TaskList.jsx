@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Task from '@/components/task/Task';
+import ConfirmModal from '@/components/confirmModal/ConfirmModal';
 import { addTask } from '@/store/slices/tasksSlice';
 import {
   setTaskListTitle,
@@ -26,6 +27,7 @@ const TaskList = ({ id }) => {
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [localTitle, setLocalTitle] = useState(title);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const editInputRef = useRef(null);
 
   useEffect(() => {
@@ -89,11 +91,15 @@ const TaskList = ({ id }) => {
     }
   };
 
-  const handleDeleteList = async () => {
+  const handleDeleteList = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
     try {
       await taskListsApi.deleteTaskList(id, email);
-
       dispatch(deleteTaskList({ taskListId: id }));
+      setIsModalOpen(false);
     } catch (error) {
       console.error('Ошибка при удалении списка задач:', error);
     }
@@ -154,6 +160,11 @@ const TaskList = ({ id }) => {
         />
         <button onClick={handleAddTask}>+</button>
       </div>
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 };

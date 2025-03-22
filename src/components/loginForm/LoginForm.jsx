@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux';
 import { loginSuccess } from '@/store/slices/userSlice';
 import { authApi } from '@/lib/api/auth';
 import SignupForm from '@/components/signupForm/SignupForm';
-
 import { Snackbar, Alert } from '@mui/material';
 
 import '@/styles/components/authorize.scss';

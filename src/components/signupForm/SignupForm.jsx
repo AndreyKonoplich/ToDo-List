@@ -6,6 +6,7 @@ import { useDispatch } from 'react-redux';
 import { loginSuccess } from '@/store/slices/userSlice';
 import { authApi } from '@/lib/api/auth';
 import { Snackbar, Alert } from '@mui/material';
+import { validateSignup } from '@/utils/validation';
 
 import '@/styles/components/authorize.scss';
 
@@ -17,39 +18,6 @@ const SignupForm = ({ onClose }) => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
-  const validate = (name, email, password, confirmPassword) => {
-    let errorMessage = '';
-
-    if (name.length > 20) {
-      errorMessage += 'Имя не должно превышать 20 символов.\n';
-    }
-
-    if (!email.includes('@')) {
-      errorMessage += 'Некорректный email.\n';
-    }
-
-    if (password.length < 5) {
-      errorMessage += 'Пароль должен содержать минимум 5 символов.\n';
-    }
-
-    if (password.length > 30) {
-      errorMessage += 'Пароль не должен превышать 30 символов.\n';
-    }
-
-    if (password !== confirmPassword) {
-      errorMessage += 'Пароли не совпадают.\n';
-    }
-
-    if (errorMessage) {
-      setSnackbarMessage(errorMessage);
-      setSnackbarSeverity('warning');
-      setSnackbarOpen(true);
-      return false;
-    }
-
-    return true;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -59,7 +27,12 @@ const SignupForm = ({ onClose }) => {
     const password = formData.get('password');
     const confirmPassword = formData.get('confirm-password');
 
-    if (!validate(name, email, password, confirmPassword)) {
+    const errorMessage = validateSignup(name, email, password, confirmPassword);
+
+    if (errorMessage) {
+      setSnackbarMessage(errorMessage);
+      setSnackbarSeverity('warning');
+      setSnackbarOpen(true);
       return;
     }
 

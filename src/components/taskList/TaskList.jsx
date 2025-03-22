@@ -46,7 +46,6 @@ const TaskList = ({ id }) => {
         status: 'Нужно сделать',
         description: '',
         totalTime: 0,
-        remainingTime: 0,
       };
 
       try {

@@ -1,80 +1,15 @@
 [
   {
-    "id": 3,
-    "title": "Нужно сделать",
-    "email": "mr.konoplich2003@mail.ru",
-    "tasks": [
-      {
-        "id": 1742596869210,
-        "title": "Убрать дублирование кода с датами",
-        "status": "Нужно сделать",
-        "description": "",
-        "totalTime": "2025-03-23",
-        "remainingTime": 0
-      },
-      {
-        "id": 1742596921914,
-        "title": "Убрать поле remainingTime у объекта task",
-        "status": "Нужно сделать",
-        "description": "",
-        "totalTime": "2025-03-23",
-        "remainingTime": 0
-      },
-      {
-        "id": 1742597029031,
-        "title": "Добавить разные цвета в зависимости от статуса",
-        "status": "Нужно сделать",
-        "description": "",
-        "totalTime": 0,
-        "remainingTime": 0
-      }
-    ],
-    "isDeleted": false
-  },
-  {
-    "id": 5,
+    "id": 1,
     "title": "Новый список",
     "email": "kandrat.71@mail.ru",
     "tasks": [
       {
-        "id": 1742596330402,
+        "id": 1742633688720,
         "title": "123",
         "status": "Нужно сделать",
         "description": "",
-        "totalTime": "2025-03-29",
-        "remainingTime": 0
-      }
-    ],
-    "isDeleted": false
-  },
-  {
-    "id": 6,
-    "title": "Новый список",
-    "email": "kandrat.71@mail.ru",
-    "tasks": [
-      {
-        "id": 1742596513183,
-        "title": "1234",
-        "status": "Нужно сделать",
-        "description": "",
-        "totalTime": "2025-03-25",
-        "remainingTime": 0
-      }
-    ],
-    "isDeleted": false
-  },
-  {
-    "id": 7,
-    "title": "Новый список",
-    "email": "mr.konoplich2003@mail.ru",
-    "tasks": [
-      {
-        "id": 1742599856575,
-        "title": "Обновить стили кнопки",
-        "status": "Нужно сделать",
-        "description": "",
-        "totalTime": "2025-03-29",
-        "remainingTime": 0
+        "totalTime": "2025-03-25"
       }
     ],
     "isDeleted": false

@@ -10,16 +10,9 @@ import {
   closeModal,
 } from '@/store/slices/tasksSlice';
 import { tasksApi } from '@/lib/api/tasks';
+import { formatDate } from '@/utils/dateUtils';
 
 import '@/styles/components/task.scss';
-
-const formatDate = (date) => {
-  const d = new Date(date);
-  const day = d.getDate().toString().padStart(2, '0');
-  const month = (d.getMonth() + 1).toString().padStart(2, '0');
-  const year = d.getFullYear();
-  return `${day}.${month}.${year}`;
-};
 
 const Task = ({ taskId, taskListId }) => {
   const dispatch = useDispatch();

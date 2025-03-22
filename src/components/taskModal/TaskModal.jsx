@@ -1,23 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { formatDate, calculateRemainingDays } from '@/utils/dateUtils';
 
 import '@/styles/components/taskModal.scss';
-
-const formatDate = (date) => {
-  if (!date) return '';
-  const d = new Date(date);
-  if (isNaN(d.getTime())) return '';
-  const day = d.getDate().toString().padStart(2, '0');
-  const month = (d.getMonth() + 1).toString().padStart(2, '0');
-  const year = d.getFullYear();
-  return `${day}.${month}.${year}`;
-};
-
-const getRemainingDaysText = (remainingDays) => {
-  if (remainingDays === 'Задача просрочена') return remainingDays;
-  if (remainingDays === 1) return `${remainingDays} день`;
-  if (remainingDays >= 2 && remainingDays <= 4) return `${remainingDays} дня`;
-  return `${remainingDays} дней`;
-};
 
 const TaskModal = ({ task, onEdit, onDelete, onClose, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -25,21 +9,7 @@ const TaskModal = ({ task, onEdit, onDelete, onClose, onSave }) => {
   const [remainingDays, setRemainingDays] = useState('');
 
   useEffect(() => {
-    if (task?.totalTime) {
-      const totalTime = new Date(task.totalTime);
-      if (isNaN(totalTime.getTime())) {
-        setRemainingDays('');
-      } else {
-        const today = new Date();
-        const diffTime = totalTime - today;
-        const diffDays = Math.floor(diffTime / (1000 * 3600 * 24));
-        setRemainingDays(
-          diffDays > 0 ? getRemainingDaysText(diffDays) : 'Задача просрочена'
-        );
-      }
-    } else {
-      setRemainingDays('');
-    }
+    setRemainingDays(calculateRemainingDays(task?.totalTime));
   }, [task?.totalTime]);
 
   const handleSave = () => {

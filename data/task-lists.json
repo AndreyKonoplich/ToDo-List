@@ -14,16 +14,9 @@
     "isDeleted": false
   },
   {
-    "id": 4,
-    "title": "Новый список",
-    "email": "kandrat.71@mail.ru",
-    "tasks": [],
-    "isDeleted": false
-  },
-  {
     "id": 5,
     "title": "Новый список",
-    "email": "konoplich1999@gmail.com",
+    "email": "kandrat.71@mail.ru",
     "tasks": [],
     "isDeleted": false
   }

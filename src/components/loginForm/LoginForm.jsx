@@ -109,7 +109,6 @@ const LoginForm = () => {
 
       {isSignupModalOpen && <SignupForm onClose={closeSignupModal} />}
 
-      {/* Snackbar */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
